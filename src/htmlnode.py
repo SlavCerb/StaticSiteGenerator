@@ -3,11 +3,11 @@ class HTMLNode:
     # value - A string representing the value of the HTML tag (e.g. the text inside a paragraph)
     # children - A list of HTMLNode objects representing the children of this node
     # props - A dictionary of key-value pairs representing the attributes of the HTML tag. For example, a link (<a> tag) might have {"href": "https://www.google.com"}
-    def __init__(self, tag=None, value=None, children=None, props=None):
+    def __init__(self, tag=None, value=None, props=None, children=None):
         self.tag = tag
         self.value = value
+        self.props = props       
         self.children = children
-        self.props = props
 
     def to_html(self):
         # Child classes will override this method to render themselves as HTML.
@@ -33,5 +33,43 @@ class HTMLNode:
             return None
 
     def __repr__(self):
-        output = f"HTMLNode({self.tag}, {self.value}, {self.children}, {self.props})"
+        output = f"HTMLNode({self.tag}, {self.value}, {self.props}, {self.children})"
+        return output
+
+class LeafNode(HTMLNode):
+    def __init__(self, tag, value, props=None):
+        super().__init__(tag=tag, value=value, props=props)
+
+    def to_html(self):
+        if self.value == None:
+            raise ValueError("Leaf Node has no Value")
+
+        output = ""
+        if self.tag == None:
+            output = self.value
+        elif self.props != None:
+            output = f"<{self.tag} {self.props_to_html()}>{self.value}</{self.tag}>"
+        else:
+            output = f"<{self.tag}>{self.value}</{self.tag}>"
+
+        return output
+
+class ParentNode(HTMLNode):
+    def __init__(self, tag, children):
+        super().__init__(tag=tag, children=children)
+
+    def to_html(self):
+        if self.tag == None:
+            raise ValueError("Parent Node has no Tag")
+
+        if self.children == False:
+            raise ValueError("Parent Node has no Children")
+
+        opener = f"<{self.tag}>"
+        closer = f"</{self.tag}>"
+        output = opener
+        for child in self.children:
+            output +=f"{child.to_html()}"
+
+        output += closer
         return output
