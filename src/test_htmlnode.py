@@ -1,8 +1,6 @@
 import unittest
 
-from htmlnode import HTMLNode
-from htmlnode import LeafNode
-from htmlnode import ParentNode
+from htmlnode import HTMLNode, LeafNode, ParentNode
 
 fail_message = "TEST FAILED"
 testnode1 = HTMLNode("a", "testlink", {"href": "https://www.google.com", "target": "_blank"}, None)
